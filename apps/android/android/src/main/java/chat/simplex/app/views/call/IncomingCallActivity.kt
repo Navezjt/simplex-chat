@@ -7,13 +7,12 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import chat.simplex.common.platform.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -25,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import dev.icerock.moko.resources.compose.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,10 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import chat.simplex.app.*
 import chat.simplex.app.R
-import chat.simplex.app.model.*
-import chat.simplex.app.model.NtfManager.Companion.OpenChatAction
-import chat.simplex.app.ui.theme.*
-import chat.simplex.app.views.helpers.ProfileImage
+import chat.simplex.common.model.*
+import chat.simplex.app.model.NtfManager.OpenChatAction
+import chat.simplex.common.platform.ntfManager
+import chat.simplex.common.ui.theme.*
+import chat.simplex.common.views.helpers.ProfileImage
+import chat.simplex.common.views.call.*
+import chat.simplex.common.views.helpers.SimpleButton
 import kotlinx.datetime.Clock
 
 class IncomingCallActivity: ComponentActivity() {
@@ -120,7 +123,7 @@ fun IncomingCallLockScreenAlert(invitation: RcvCallInvitation, chatModel: ChatMo
   DisposableEffect(Unit) {
     onDispose {
       // Cancel notification whatever happens next since otherwise sound from notification and from inside the app can co-exist
-      chatModel.controller.ntfManager.cancelCallNotification()
+      ntfManager.cancelCallNotification()
     }
   }
   IncomingCallLockScreenAlertLayout(
@@ -130,7 +133,7 @@ fun IncomingCallLockScreenAlert(invitation: RcvCallInvitation, chatModel: ChatMo
     rejectCall = { cm.endCall(invitation = invitation) },
     ignoreCall = {
       chatModel.activeCallInvitation.value = null
-      chatModel.controller.ntfManager.cancelCallNotification()
+      ntfManager.cancelCallNotification()
     },
     acceptCall = { cm.acceptIncomingCall(invitation = invitation) },
     openApp = {
@@ -218,10 +221,10 @@ private fun LockScreenCallButton(text: String, icon: Painter, color: Color, acti
   }
 }
 
-@Preview(
+@Preview/*(
   uiMode = Configuration.UI_MODE_NIGHT_YES,
   showBackground = true
-)
+)*/
 @Composable
 fun PreviewIncomingCallLockScreenAlert() {
   SimpleXTheme(true) {

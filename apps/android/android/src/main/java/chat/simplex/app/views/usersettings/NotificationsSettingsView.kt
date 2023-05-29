@@ -3,44 +3,26 @@ package chat.simplex.app.views.usersettings
 import SectionBottomSpacer
 import SectionView
 import SectionViewSelectable
-import android.os.Build
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import dev.icerock.moko.resources.compose.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import chat.simplex.app.*
-import chat.simplex.app.R
-import chat.simplex.app.model.ChatModel
-import chat.simplex.app.ui.theme.*
-import chat.simplex.app.views.helpers.*
+import chat.simplex.common.helpers.requiresIgnoringBattery
+import chat.simplex.common.model.*
+import chat.simplex.common.platform.androidAppContext
+import com.icerockdev.library.MR
+import chat.simplex.common.ui.theme.*
+import chat.simplex.common.views.helpers.*
+import chat.simplex.common.views.usersettings.SettingsActionItemWithContent
 import kotlinx.coroutines.*
 import kotlin.collections.ArrayList
-
-enum class NotificationsMode(private val requiresIgnoringBatterySinceSdk: Int) {
-  OFF(Int.MAX_VALUE), PERIODIC(Build.VERSION_CODES.M), SERVICE(Build.VERSION_CODES.S), /*INSTANT(Int.MAX_VALUE) - for Firebase notifications */;
-
-  val requiresIgnoringBattery
-    get() = requiresIgnoringBatterySinceSdk <= Build.VERSION.SDK_INT
-
-  companion object {
-    val default: NotificationsMode = SERVICE
-  }
-}
-
-enum class NotificationPreviewMode {
-  MESSAGE, CONTACT, HIDDEN;
-
-  companion object {
-    val default: NotificationPreviewMode = MESSAGE
-  }
-}
 
 @Composable
 fun NotificationsSettingsView(
@@ -52,12 +34,12 @@ fun NotificationsSettingsView(
   }
 
   NotificationsSettingsLayout(
-    notificationsMode = chatModel.notificationsMode,
+    notificationsMode = chatModel.controller.appPrefs.notificationsMode.state,
     notificationPreviewMode = chatModel.notificationPreviewMode,
     showPage = { page ->
       ModalManager.shared.showModalCloseable(true) {
           when (page) {
-            CurrentPage.NOTIFICATIONS_MODE -> NotificationsModeView(chatModel.notificationsMode) { changeNotificationsMode(it, chatModel) }
+            CurrentPage.NOTIFICATIONS_MODE -> NotificationsModeView(chatModel.controller.appPrefs.notificationsMode.state) { changeNotificationsMode(it, chatModel) }
             CurrentPage.NOTIFICATION_PREVIEW_MODE -> NotificationPreviewView(chatModel.notificationPreviewMode, onNotificationPreviewModeSelected)
           }
       }
@@ -81,9 +63,9 @@ fun NotificationsSettingsLayout(
   Column(
     Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
   ) {
-    AppBarTitle(stringResource(R.string.notifications))
+    AppBarTitle(stringResource(MR.strings.notifications))
     SectionView(null) {
-      SettingsActionItemWithContent(null, stringResource(R.string.settings_notifications_mode_title), { showPage(CurrentPage.NOTIFICATIONS_MODE) }) {
+      SettingsActionItemWithContent(null, stringResource(MR.strings.settings_notifications_mode_title), { showPage(CurrentPage.NOTIFICATIONS_MODE) }) {
         Text(
           modes.first { it.value == notificationsMode.value }.title,
           maxLines = 1,
@@ -91,7 +73,7 @@ fun NotificationsSettingsLayout(
           color = MaterialTheme.colors.secondary
         )
       }
-      SettingsActionItemWithContent(null, stringResource(R.string.settings_notification_preview_mode_title), { showPage(CurrentPage.NOTIFICATION_PREVIEW_MODE) }) {
+      SettingsActionItemWithContent(null, stringResource(MR.strings.settings_notification_preview_mode_title), { showPage(CurrentPage.NOTIFICATION_PREVIEW_MODE) }) {
         Text(
           previewModes.first { it.value == notificationPreviewMode.value }.title,
           maxLines = 1,
@@ -113,7 +95,7 @@ fun NotificationsModeView(
   Column(
     Modifier.fillMaxWidth(),
   ) {
-    AppBarTitle(stringResource(R.string.settings_notifications_mode_title).lowercase().capitalize(Locale.current))
+    AppBarTitle(stringResource(MR.strings.settings_notifications_mode_title).lowercase().capitalize(Locale.current))
     SectionViewSelectable(null, notificationsMode, modes, onNotificationsModeSelected)
   }
 }
@@ -127,7 +109,7 @@ fun NotificationPreviewView(
   Column(
     Modifier.fillMaxWidth(),
   ) {
-    AppBarTitle(stringResource(R.string.settings_notification_preview_title))
+    AppBarTitle(stringResource(MR.strings.settings_notification_preview_title))
     SectionViewSelectable(null, notificationPreviewMode, previewModes, onNotificationPreviewModeSelected)
   }
 }
@@ -138,22 +120,22 @@ private fun notificationModes(): List<ValueTitleDesc<NotificationsMode>> {
   res.add(
     ValueTitleDesc(
       NotificationsMode.OFF,
-      generalGetString(R.string.notifications_mode_off),
-      generalGetString(R.string.notifications_mode_off_desc),
+      generalGetString(MR.strings.notifications_mode_off),
+      generalGetString(MR.strings.notifications_mode_off_desc),
     )
   )
   res.add(
     ValueTitleDesc(
       NotificationsMode.PERIODIC,
-      generalGetString(R.string.notifications_mode_periodic),
-      generalGetString(R.string.notifications_mode_periodic_desc),
+      generalGetString(MR.strings.notifications_mode_periodic),
+      generalGetString(MR.strings.notifications_mode_periodic_desc),
     )
   )
   res.add(
     ValueTitleDesc(
       NotificationsMode.SERVICE,
-      generalGetString(R.string.notifications_mode_service),
-      generalGetString(R.string.notifications_mode_service_desc),
+      generalGetString(MR.strings.notifications_mode_service),
+      generalGetString(MR.strings.notifications_mode_service_desc),
     )
   )
   return res
@@ -165,37 +147,37 @@ fun notificationPreviewModes(): List<ValueTitleDesc<NotificationPreviewMode>> {
   res.add(
     ValueTitleDesc(
       NotificationPreviewMode.MESSAGE,
-      generalGetString(R.string.notification_preview_mode_message),
-      generalGetString(R.string.notification_preview_mode_message_desc),
+      generalGetString(MR.strings.notification_preview_mode_message),
+      generalGetString(MR.strings.notification_preview_mode_message_desc),
     )
   )
   res.add(
     ValueTitleDesc(
       NotificationPreviewMode.CONTACT,
-      generalGetString(R.string.notification_preview_mode_contact),
-      generalGetString(R.string.notification_preview_mode_contact_desc),
+      generalGetString(MR.strings.notification_preview_mode_contact),
+      generalGetString(MR.strings.notification_preview_mode_contact_desc),
     )
   )
   res.add(
     ValueTitleDesc(
       NotificationPreviewMode.HIDDEN,
-      generalGetString(R.string.notification_preview_mode_hidden),
-      generalGetString(R.string.notification_display_mode_hidden_desc),
+      generalGetString(MR.strings.notification_preview_mode_hidden),
+      generalGetString(MR.strings.notification_display_mode_hidden_desc),
     )
   )
   return res
 }
 
 fun changeNotificationsMode(mode: NotificationsMode, chatModel: ChatModel) {
-  chatModel.controller.appPrefs.notificationsMode.set(mode.name)
-  if (mode.requiresIgnoringBattery && !chatModel.controller.isIgnoringBatteryOptimizations(chatModel.controller.appContext)) {
+  chatModel.controller.appPrefs.notificationsMode.set(mode)
+  if (mode.requiresIgnoringBattery && !SimplexService.isIgnoringBatteryOptimizations()) {
     chatModel.controller.appPrefs.backgroundServiceNoticeShown.set(false)
   }
-  chatModel.notificationsMode.value = mode
+  chatModel.controller.appPrefs.notificationsMode.set(mode)
   SimplexService.StartReceiver.toggleReceiver(mode == NotificationsMode.SERVICE)
   CoroutineScope(Dispatchers.Default).launch {
     if (mode == NotificationsMode.SERVICE)
-      SimplexService.start(SimplexApp.context)
+      SimplexService.start()
     else
       SimplexService.safeStopService(SimplexApp.context)
   }
@@ -203,5 +185,5 @@ fun changeNotificationsMode(mode: NotificationsMode, chatModel: ChatModel) {
   if (mode != NotificationsMode.PERIODIC) {
     MessagesFetcherWorker.cancelAll()
   }
-  chatModel.controller.showBackgroundServiceNoticeIfNeeded()
+  SimplexService.showBackgroundServiceNoticeIfNeeded()
 }

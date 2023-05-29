@@ -191,7 +191,7 @@
     <string name="images_limit_desc">Es können nur 10 Bilder auf einmal gesendet werden</string>
     <string name="image_decoding_exception_title">Dekodierungsfehler</string>
     <string name="image_decoding_exception_desc">Das Bild kann nicht dekodiert werden. Bitte versuchen Sie es mit einem anderen Bild oder wenden Sie sich an die Entwickler.</string>
-    <!-- Images - chat.simplex.app.views.chat.item.CIImageView.kt -->
+    <!-- Images - chat.simplex.common.views.chat.item.CIImageView.kt -->
     <string name="image_descr">Bild</string>
     <string name="icon_descr_waiting_for_image">Warten auf ein Bild</string>
     <string name="icon_descr_asked_to_receive">Es wird um den Empfang eines Bildes gebeten</string>

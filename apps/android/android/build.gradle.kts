@@ -127,28 +127,16 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
     implementation("androidx.lifecycle:lifecycle-process:2.4.1")
     implementation("androidx.activity:activity-compose:1.5.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-    implementation("com.charleskorn.kaml:kaml:0.43.0")
     //implementation("androidx.compose.material:material-icons-extended:$compose_version")
     //implementation("androidx.compose.ui:ui-util:$compose_version")
-    implementation("com.google.accompanist:accompanist-insets:0.23.0")
     implementation("androidx.webkit:webkit:1.4.0")
     implementation("com.godaddy.android.colorpicker:compose-color-picker:0.4.2")
-
-    val work_version = "2.7.1"
-    implementation("androidx.work:work-runtime-ktx:$work_version")
-    implementation("androidx.work:work-multiprocess:$work_version")
 
     val camerax_version = "1.1.0-beta01"
     implementation("androidx.camera:camera-core:${camerax_version}")
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation("androidx.camera:camera-view:${camerax_version}")
-
-    //Barcode
-    implementation("org.boofcv:boofcv-android:0.40.1")
-    implementation("org.boofcv:boofcv-core:0.40.1")
 
     //Camera Permission
     implementation("com.google.accompanist:accompanist-permissions:0.23.0")
@@ -157,15 +145,9 @@ dependencies {
     // Link Previews
     implementation("org.jsoup:jsoup:1.13.1")
 
-    // Biometric authentication
-    implementation("androidx.biometric:biometric:1.2.0-alpha04")
-
     // GIFs support
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation("io.coil-kt:coil-gif:2.1.0")
-
-    // Video support
-    implementation("com.google.android.exoplayer:exoplayer:2.17.1")
 
     // Wheel picker
     implementation("com.github.zj565061763:compose-wheel-picker:1.0.0-alpha16")

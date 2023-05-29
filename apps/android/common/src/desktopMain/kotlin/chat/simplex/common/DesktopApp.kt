@@ -8,3 +8,6 @@ import androidx.compose.runtime.Composable
 fun AppPreview() {
   App()
 }
+
+/** Needed for [chat.simplex.common.platform.Files] to get path to jar file */
+class DesktopApp()
